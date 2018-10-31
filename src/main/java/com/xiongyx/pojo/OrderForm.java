@@ -1,5 +1,6 @@
 package com.xiongyx.pojo;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -15,6 +16,11 @@ public class OrderForm {
      * 主键id
      * */
     private String id;
+
+    /**
+     * 所属门店id
+     * */
+    private String shopID;
 
     /**
      * 关联的顾客id
@@ -36,12 +42,26 @@ public class OrderForm {
         this.customerID = customerID;
     }
 
+    public OrderForm(String id, String shopID, String customerID) {
+        this.id = id;
+        this.shopID = shopID;
+        this.customerID = customerID;
+    }
+
     public String getId() {
         return id;
     }
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getShopID() {
+        return shopID;
+    }
+
+    public void setShopID(String shopID) {
+        this.shopID = shopID;
     }
 
     public String getCustomerID() {
@@ -68,10 +88,21 @@ public class OrderForm {
         this.customerMap = customerMap;
     }
 
+    public Map<String,Object> toMap(){
+        Map<String,Object> map = new HashMap<>();
+
+        map.put("id",this.id);
+        map.put("shopID",this.shopID);
+        map.put("customerID",this.customerID);
+
+        return map;
+    }
+
     @Override
     public String toString() {
         return "OrderForm{" +
                 "id='" + id + '\'' +
+                ", shopID='" + shopID + '\'' +
                 ", customerID='" + customerID + '\'' +
                 ", customer=" + customer +
                 ", customerMap=" + customerMap +

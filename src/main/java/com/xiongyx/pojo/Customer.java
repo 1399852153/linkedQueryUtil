@@ -22,7 +22,6 @@ public class Customer {
      * */
     private String userName;
 
-
     public Customer(String id, String userName) {
         this.id = id;
         this.userName = userName;

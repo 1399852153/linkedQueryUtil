@@ -1,6 +1,7 @@
 package com.xiongyx.util;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,6 +35,72 @@ public class LinkedQueryUtil {
 
         //:::进行数据匹配链接
         matchedDataToBeanList(beanList,beanKeyName,beanModelName,dataMap);
+    }
+
+    /**
+     * 数据列表 一对多连接 :  oneKeyName <---> manyKeyName 作为连接条件
+     *
+     * @param oneDataList       '一方' 数据列表
+     * @param oneKeyName        '一方' 连接字段key的名字
+     * @param oneModelName      '一方' 用于存放 '多方'数据的列表属性名
+     * @param manyDataList      '多方' 数据列表
+     * @param manyKeyName       '多方' 连接字段key的名字
+     *
+     *  潜规则:    '一方' 存放 '多方'数据的属性类型必须为List
+     *
+     * @throws Exception
+     */
+    public static void oneToManyLinked(List oneDataList,String oneKeyName,String oneModelName,List manyDataList,String manyKeyName) throws Exception {
+        if(!needTrans(oneDataList,manyDataList)){
+            return;
+        }
+
+        //:::将'一方'数据,以连接字段为key,转成map,便于查询
+        Map<String,Object> oneDataMap = beanListToMap(oneDataList,oneKeyName);
+
+        //:::获得'一方'存放 '多方'数据字段的get方法名
+        String oneDataModelGetMethodName = makeGetMethodName(oneModelName);
+        //:::获得'一方'存放 '多方'数据字段的set方法名
+        String oneDataModelSetMethodName = makeSetMethodName(oneModelName);
+
+        //:::获得'多方'连接字段的get方法名
+        String manyDataKeyGetMethodName = makeGetMethodName(manyKeyName);
+
+        try {
+            //:::遍历;多方'列表
+            for (Object manyDataItem : manyDataList) {
+                //:::多方对象连接key的值
+                String manyDataItemKey;
+
+                //:::判断当前'多方'对象的类型是否是 hashMap
+                if(manyDataItem.getClass() == HashMap.class){
+                    //:::如果是hashMap类型的,先转为Map对象
+                    Map manyDataItemMap = (Map)manyDataItem;
+
+                    //:::通过参数key 直接获取对象key连接字段的值
+                    manyDataItemKey = (String)manyDataItemMap.get(manyKeyName);
+                }else{
+                    //:::如果是普通的pojo对象,则通过反射获得get方法来获取key连接字段的值
+
+                    //:::获得 '多方' 数据中key的method对象
+                    Method manyDataKeyGetMethod = manyDataItem.getClass().getMethod(manyDataKeyGetMethodName);
+
+                    //:::调用'多方'数据的get方法获得当前 '多方' 数据连接字段key的值
+                    manyDataItemKey = (String) manyDataKeyGetMethod.invoke(manyDataItem);
+                }
+
+                //:::通过'多方'的连接字段key从 '一方' map集合中查找出连接key相同的 '一方'数据对象
+                Object matchedOneData = oneDataMap.get(manyDataItemKey);
+
+                //:::如果匹配到了数据,才进行操作
+                if(matchedOneData != null){
+                    //:::将当前迭代的 '多方'数据 放入 '一方' 的对应的列表中
+                    setManyDataToOne(matchedOneData,manyDataItem,oneDataModelGetMethodName,oneDataModelSetMethodName);
+                }
+            }
+        }catch(Exception e){
+            throw new Exception(e);
+        }
     }
 
     /**
@@ -188,6 +255,57 @@ public class LinkedQueryUtil {
             }
         }catch(Exception e){
             throw new Exception(e);
+        }
+    }
+
+    /**
+     * 将 '多方' 数据存入 '一方' 列表中
+     * @param oneData 匹配到的'一方'数据
+     * @param manyDataItem  当前迭代的 '多方数据'
+     * @param oneDataModelGetMethodName 一方列表的get方法名
+     * @param oneDataModelSetMethodName 一方列表的set方法名
+     * @throws Exception
+     */
+    private static void setManyDataToOne(Object oneData,Object manyDataItem,String oneDataModelGetMethodName,String oneDataModelSetMethodName) throws Exception {
+        //:::获得 '一方' 数据中存放'多方'数据属性的get方法
+        Method oneDataModelGetMethod = oneData.getClass().getMethod(oneDataModelGetMethodName);
+
+        //::: '一方' 数据中存放'多方'数据属性的set方法
+        Method oneDataModelSetMethod;
+        try {
+            //::: '一方' set方法对象
+            oneDataModelSetMethod = oneData.getClass().getMethod(oneDataModelSetMethodName,List.class);
+        }catch(NoSuchMethodException e){
+            throw new Exception("一对多连接时,一方指定的model对象必须是list类型");
+        }
+
+        //:::获得存放'多方'数据get方法返回值类型
+        Class modelType = oneDataModelGetMethod.getReturnType();
+
+        //::: get方法返回值必须是List
+        if(modelType.equals(List.class)){
+            //:::调用get方法,获得数据列表
+            List modelList = (List)oneDataModelGetMethod.invoke(oneData);
+
+            //:::如果当前成员变量为null
+            if(modelList == null){
+                //:::创建一个新的List
+                List newList = new ArrayList<>();
+
+                //:::将当前的'多方'数据存入list
+                newList.add(manyDataItem);
+
+                //:::将这个新创建出的List赋值给 '一方'的对象
+                oneDataModelSetMethod.invoke(oneData,newList);
+            }else{
+                //:::如果已经存在了List
+
+                //:::直接将'多方'数据存入list
+                modelList.add(manyDataItem);
+            }
+
+        }else{
+            throw new Exception("一对多连接时,一方指定的model对象必须是list类型");
         }
     }
 }
