@@ -16,13 +16,15 @@ import java.util.Map;
 public class LinkedQueryUtil {
 
     /**
-     * 一对一连接
+     * 一对一连接 :  beanKeyName <---> dataKeyName 作为连接条件
      *
      * @param beanList 需要被存放数据的beanList(主体)
-     * @param beanKeyName   beanList中用来匹配数据key的属性
+     * @param beanKeyName   beanList中连接字段key的名字
      * @param beanModelName  beanList中用来存放匹配到的数据value的属性
      * @param dataList  需要被关联的data列表
-     * @param dataKeyName 需要被关联的data中的key,和参数beanKeyName代表的数值一致
+     * @param dataKeyName 需要被关联的data中连接字段key的名字
+     *
+     * @throws Exception
      */
     public static void oneToOneLinked(List beanList, String beanKeyName, String beanModelName, List dataList, String dataKeyName) throws Exception {
         //:::如果不需要转换,直接返回
@@ -38,7 +40,7 @@ public class LinkedQueryUtil {
     }
 
     /**
-     * 数据列表 一对多连接 :  oneKeyName <---> manyKeyName 作为连接条件
+     * 一对多连接 :  oneKeyName <---> manyKeyName 作为连接条件
      *
      * @param oneDataList       '一方' 数据列表
      * @param oneKeyName        '一方' 连接字段key的名字
@@ -46,7 +48,7 @@ public class LinkedQueryUtil {
      * @param manyDataList      '多方' 数据列表
      * @param manyKeyName       '多方' 连接字段key的名字
      *
-     *  潜规则:    '一方' 存放 '多方'数据的属性类型必须为List
+     *  注意:  '一方' 存放 '多方'数据的属性类型必须为List
      *
      * @throws Exception
      */
