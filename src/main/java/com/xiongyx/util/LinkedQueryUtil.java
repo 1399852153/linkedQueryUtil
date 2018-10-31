@@ -67,9 +67,9 @@ public class LinkedQueryUtil {
         String manyDataKeyGetMethodName = makeGetMethodName(manyKeyName);
 
         try {
-            //:::遍历;多方'列表
+            //:::遍历'多方'列表
             for (Object manyDataItem : manyDataList) {
-                //:::多方对象连接key的值
+                //:::'多方'对象连接key的值
                 String manyDataItemKey;
 
                 //:::判断当前'多方'对象的类型是否是 hashMap
@@ -82,10 +82,10 @@ public class LinkedQueryUtil {
                 }else{
                     //:::如果是普通的pojo对象,则通过反射获得get方法来获取key连接字段的值
 
-                    //:::获得 '多方' 数据中key的method对象
+                    //:::获得'多方'数据中key的method对象
                     Method manyDataKeyGetMethod = manyDataItem.getClass().getMethod(manyDataKeyGetMethodName);
 
-                    //:::调用'多方'数据的get方法获得当前 '多方' 数据连接字段key的值
+                    //:::调用'多方'数据的get方法获得当前'多方'数据连接字段key的值
                     manyDataItemKey = (String) manyDataKeyGetMethod.invoke(manyDataItem);
                 }
 
@@ -276,7 +276,7 @@ public class LinkedQueryUtil {
             //::: '一方' set方法对象
             oneDataModelSetMethod = oneData.getClass().getMethod(oneDataModelSetMethodName,List.class);
         }catch(NoSuchMethodException e){
-            throw new Exception("一对多连接时,一方指定的model对象必须是list类型");
+            throw new Exception("未找到满足条件的'一方'set方法");
         }
 
         //:::获得存放'多方'数据get方法返回值类型
