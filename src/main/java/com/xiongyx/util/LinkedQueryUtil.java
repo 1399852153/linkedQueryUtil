@@ -48,7 +48,7 @@ public class LinkedQueryUtil {
      * @param manyDataList      '多方' 数据列表
      * @param manyKeyName       '多方' 连接字段key的名字
      *
-     *  注意:  '一方' 存放 '多方'数据的属性类型必须为List
+     *  注意:  '一方' 存放 '多方'数据的属性oneModelName类型必须为List
      *
      * @throws Exception
      */
@@ -120,34 +120,29 @@ public class LinkedQueryUtil {
         //:::由keyName获得对应的get方法字符串
         String getMethodName = makeGetMethodName(keyName);
 
-        try {
-            //:::遍历beanList
-            for(Object obj : beanList){
-                //:::如果当前数据是hashMap类型
-                if(obj.getClass() == HashMap.class){
-                    Map currentMap = (Map)obj;
+        //:::遍历beanList
+        for(Object obj : beanList){
+            //:::如果当前数据是hashMap类型
+            if(obj.getClass() == HashMap.class){
+                Map currentMap = (Map)obj;
 
-                    //:::使用keyName从map中获得对应的key
-                    String result = (String)currentMap.get(keyName);
+                //:::使用keyName从map中获得对应的key
+                String result = (String)currentMap.get(keyName);
 
-                    //:::放入map中(如果key一样,则会被覆盖去重)
-                    map.put(result,currentMap);
-                }else{
-                    //:::否则默认是pojo对象
-                    //:::获得get方法
-                    Method getMethod = obj.getClass().getMethod(getMethodName);
+                //:::放入map中(如果key一样,则会被覆盖去重)
+                map.put(result,currentMap);
+            }else{
+                //:::否则默认是pojo对象
+                //:::获得get方法
+                Method getMethod = obj.getClass().getMethod(getMethodName);
 
-                    //:::通过get方法从bean对象中得到数据key
-                    String result = (String)getMethod.invoke(obj);
+                //:::通过get方法从bean对象中得到数据key
+                String result = (String)getMethod.invoke(obj);
 
-                    //:::放入map中(如果key一样,则会被覆盖去重)
-                    map.put(result,obj);
-                }
+                //:::放入map中(如果key一样,则会被覆盖去重)
+                map.put(result,obj);
             }
-        }catch(Exception e){
-            throw new Exception(e);
         }
-
         //:::返回结果
         return map;
     }
@@ -224,39 +219,28 @@ public class LinkedQueryUtil {
         String beanGetMethodName = makeGetMethodName(beanKeyName);
         //:::获得beanList中存放对象的model的set方法名
         String beanSetMethodName = makeSetMethodName(beanModelName);
-
-        try{
-            //:::遍历整个beanList
-            for(Object bean : beanList){
-                //:::获得bean中key的method对象
-                Method beanGetMethod = bean.getClass().getMethod(beanGetMethodName);
-
-                //:::调用获得当前的key
-                String currentBeanKey = (String)beanGetMethod.invoke(bean);
-
-                //:::从被关联的数据集map中找到匹配的数据
-                Object matchedData = dataMap.get(currentBeanKey);
-
-                //:::如果找到了匹配的对象
-                if(matchedData != null){
-                    //:::获得bean中对应model的set方法
-                    Class clazz = matchedData.getClass();
-
-                    //:::如果匹配到的数据是hashMap
-                    if(clazz == HashMap.class){
-                        //:::转为父类map class用来调用set方法
-                        clazz = Map.class;
-                    }
-
-                    //:::获得主体bean用于存放被关联对象的set方法
-                    Method beanSetMethod = bean.getClass().getMethod(beanSetMethodName,clazz);
-
-                    //:::执行set方法,将匹配到的数据放入主体数据对应的model属性中
-                    beanSetMethod.invoke(bean,matchedData);
+        //:::遍历整个beanList
+        for(Object bean : beanList){
+            //:::获得bean中key的method对象
+            Method beanGetMethod = bean.getClass().getMethod(beanGetMethodName);
+            //:::调用获得当前的key
+            String currentBeanKey = (String)beanGetMethod.invoke(bean);
+            //:::从被关联的数据集map中找到匹配的数据
+            Object matchedData = dataMap.get(currentBeanKey);
+            //:::如果找到了匹配的对象
+            if(matchedData != null){
+                //:::获得bean中对应model的set方法
+                Class clazz = matchedData.getClass();
+                //:::如果匹配到的数据是hashMap
+                if(clazz == HashMap.class){
+                    //:::转为父类map class用来调用set方法
+                    clazz = Map.class;
                 }
+                //:::获得主体bean用于存放被关联对象的set方法
+                Method beanSetMethod = bean.getClass().getMethod(beanSetMethodName,clazz);
+                //:::执行set方法,将匹配到的数据放入主体数据对应的model属性中
+                beanSetMethod.invoke(bean,matchedData);
             }
-        }catch(Exception e){
-            throw new Exception(e);
         }
     }
 
