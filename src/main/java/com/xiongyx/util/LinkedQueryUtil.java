@@ -1,8 +1,6 @@
 package com.xiongyx.util;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -192,41 +190,4 @@ public class LinkedQueryUtil {
             throw new Exception(e);
         }
     }
-
-    //    public static void main(String[] args) throws Exception{
-//        /**
-//         * 举例说明
-//         * class Home{
-//         *     String id;
-//         *     String address;
-//         * }
-//         *
-//         * class Student{
-//         *     String id;
-//         *     String homeId;
-//         *     Home home;
-//         * }
-//         * */
-//
-//        Home h1 = new Home("11111","一栋101");
-//        Home h2 = new Home("22222","一栋102");
-//        Home h3 = new Home("33333","一栋103");
-//
-//        List<Home> homeList = new ArrayList<>();
-//        homeList.add(h1);
-//        homeList.add(h2);
-//        homeList.add(h3);
-//
-//        Student s1 = new Student("001","33333");
-//        Student s2 = new Student("002","22222");
-//        Student s3 = new Student("003","11111");
-//
-//        List<Student> studentList = new ArrayList<>();
-//        studentList.add(s1);
-//        studentList.add(s2);
-//        studentList.add(s3);
-//
-//        //:::将homeList中的数据组装进studentList中对应的bean中
-//        oneToOneLinked(studentList,"homeId","home",homeList,"id");
-//    }
 }

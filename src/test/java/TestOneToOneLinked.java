@@ -11,15 +11,17 @@ import java.util.stream.Collectors;
 /**
  * @Author xiongyx
  * @Create 2018/10/31.
+ *
+ * 一对一连接测试
  */
 
 public class TestOneToOneLinked {
 
     public static void main(String[] args) throws Exception {
-        //:::pojo 一对一连接
+        //:::pojo 一对一连接测试
         testPojoOneToOneLinked();
 
-        //:::map 一对一连接
+        //:::map 一对一连接测试
         testMapOneToOneLinked();
     }
 
