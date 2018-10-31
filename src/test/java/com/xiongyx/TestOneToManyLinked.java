@@ -1,3 +1,5 @@
+package com.xiongyx;
+
 import com.xiongyx.pojo.OrderForm;
 import com.xiongyx.pojo.Shop;
 import com.xiongyx.util.CommonUtil;
