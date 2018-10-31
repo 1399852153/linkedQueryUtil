@@ -23,12 +23,12 @@ public class Shop {
     private String shopName;
 
     /**
-     * 顾客列表 (一个门店关联N个订单 一对多)
+     * 订单列表 (一个门店关联N个订单 一对多)
      * */
     private List<OrderForm> orderFormList;
 
     /**
-     * 顾客map列表 (一个门店关联N个订单 一对多)
+     * 订单map列表 (一个门店关联N个订单 一对多)
      * */
     private List<Map<String,Object>> orderFormMapList;
 
