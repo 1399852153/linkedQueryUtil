@@ -1,5 +1,8 @@
 package com.xiongyx.pojo;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * @Author xiongyx
  * @Create 2018/10/31.
@@ -18,7 +21,6 @@ public class Customer {
      * 姓名
      * */
     private String userName;
-
 
 
     public Customer(String id, String userName) {
@@ -40,6 +42,15 @@ public class Customer {
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    public Map<String,Object> toMap(){
+        Map<String,Object> map = new HashMap<>();
+
+        map.put("id",this.id);
+        map.put("userName",this.userName);
+
+        return map;
     }
 
     @Override

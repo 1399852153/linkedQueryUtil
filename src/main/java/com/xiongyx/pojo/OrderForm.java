@@ -1,5 +1,7 @@
 package com.xiongyx.pojo;
 
+import java.util.Map;
+
 /**
  * @Author xiongyx
  * @Create 2018/10/31.
@@ -23,6 +25,11 @@ public class OrderForm {
      * 关联的顾客model
      * */
     private Customer customer;
+
+    /**
+     * 关联的顾客map
+     * */
+    private Map<String,Object> customerMap;
 
     public OrderForm(String id, String customerID) {
         this.id = id;
@@ -53,12 +60,21 @@ public class OrderForm {
         this.customer = customer;
     }
 
+    public Map<String, Object> getCustomerMap() {
+        return customerMap;
+    }
+
+    public void setCustomerMap(Map<String, Object> customerMap) {
+        this.customerMap = customerMap;
+    }
+
     @Override
     public String toString() {
         return "OrderForm{" +
                 "id='" + id + '\'' +
                 ", customerID='" + customerID + '\'' +
                 ", customer=" + customer +
+                ", customerMap=" + customerMap +
                 '}';
     }
 }
